@@ -1,10 +1,12 @@
+const server = process.env.backend || "http://localhost:3001";
+
 let newCoins = [];
 let initialList = [];
 async function getData(dev, all = false) {
     if (!dev?.length) return;
     let len = 0;
     if (!all) len = initialList.length;
-    let data = await fetch("http://localhost:3001/getCoins?dev=" + dev + "&all=" + all + "&initialLength=" + len + "&phoneNum=")
+    let data = await fetch(server + "/getCoins?dev=" + dev + "&all=" + all + "&initialLength=" + len + "&phoneNum=")
     data = await data.json();
     return data;
 }
