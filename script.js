@@ -1,12 +1,10 @@
-const server = "https://pumpfundevcoinsbackend.onrender.com";
+const server = "http://localhost:3001";
 
 let newCoins = [];
 let initialList = [];
 async function getData(dev, all = false) {
     if (!dev?.length) return;
-    let len = 0;
-    if (!all) len = initialList.length;
-    let data = await fetch(server + "/getCoins?dev=" + dev + "&all=" + all + "&initialLength=" + len + "&phoneNum=")
+    let data = await fetch(server + "/getCoins?dev=" + dev + "&all=" + all + "&lastCoinMint=" + initialList[0]?.mint + "&phoneNum=")
     data = await data.json();
     return data;
 }
