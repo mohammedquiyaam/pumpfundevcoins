@@ -1,4 +1,4 @@
-const server = "http://localhost:3001";
+const server = "https://pumpfundevcoinsbackend.onrender.com";
 
 let newCoins = [];
 let initialList = [];
