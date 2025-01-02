@@ -23,7 +23,7 @@ async function StartButtonClicked() {
     }
 
     while (true) {
-        await timeout(3000);
+        await timeout(15000);
         console.log("Getting the list again");
         const data = await getData(dev);
         if (data.length > 0 && newCoins.length !== data.length) {
