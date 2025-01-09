@@ -1,14 +1,38 @@
 <html>
     <head>
         <script type="text/javascript" src="./script.js"></script>
+
+        <link rel="stylesheet" href="./styles.css">
+
     </head>
     <body>
         <div id="developer-wrapper">
-            <label id="developerLabel" >Developer: </label>
-            <input id="developer">
+            <div>
+                <label id="developerLabel" >Developer: </label>
+                <input id="developer"/>
+            </div>
+            <div>
+                <label id="buyLabel"> Buy: </label>
+                <input type="checkbox" id = "buyCheckBox"/>
+            </div>
+            <div>
+                <label id="keyLabel"> Private key: </label>
+                <input id = "keyInput"/>
+            </div>
+            <div>
+                <label id="amountLabel"> Amount: </label>
+                <input id = "amountInput"/>
+            </div>
+            <div>
+                <label id="slippageLabel"> Slippage: </label>
+                <input id = "slippageInput"/>
+            </div>
             <button onclick="StartButtonClicked()">Start</button>
         </div>
-        <div id="newCoins">
+        <div id="messages">
+            Messages in regards to new coins:
+        </div>
+        <div id="allCoins">
             Here is the list of new coins:
         </div>
     </body>

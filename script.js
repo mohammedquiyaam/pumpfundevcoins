@@ -1,45 +1,96 @@
-const server = "https://pumpfundevcoinsbackend.onrender.com";
+const server = "http://localhost:3001";
 
-let newCoins = [];
-let initialList = [];
-async function getData(dev, all = false) {
-    if (!dev?.length) return;
-    let data = await fetch(server + "/getCoins?dev=" + dev + "&all=" + all + "&lastCoinMint=" + initialList[0]?.mint + "&phoneNum=")
-    data = await data.json();
-    return data;
+let allCoins = [];
+let messages = [];
+async function getData(dev, all = false, buy, key, amount, slippage) {
+    let result = {};
+    if (!dev?.length) {
+        alert("developer field is required");
+        result.Error = true;
+        return result;
+    }
+    let params = "";
+    params += "?dev=" + dev;
+    params += "&all=" + all;
+    params += "&lastCoinMint=" + allCoins[0]?.mint;
+    params += "&phoneNum="
+    if (buy) {
+        if (!key?.length || !amount?.length || !slippage?.length) {
+            alert("Please fill all details");
+            result.Error = true;
+            return result;
+        }
+        params += "&buy=" + buy;
+
+        // get public key here
+
+        params += "&key=" + key;
+
+        params += "&amount=" + parseFloat(amount);
+        params += "&slippage=" + parseFloat(slippage);
+    }
+
+    result = await fetch(server + "/getCoins" + params);
+    result = await result.json();
+    return result;
 }
 
 async function StartButtonClicked() {
     const dev = document.getElementById('developer').value;
-    initialList = await getData(dev, true);
+    const buy = document.getElementById('buyCheckBox').checked;
+    const key = document.getElementById('keyInput').value;
+    const amount = document.getElementById('amountInput').value;
+    const slippage = document.getElementById('slippageInput').value;
 
-    // hide the dev field
+    result = await getData(dev, true, buy, key, amount, slippage);
+    if (result.Error) return;
+    allCoins = result.data;
+
+    displayCoins();
+
+    // hide necessary fields
     document.getElementById('developer-wrapper').style.display = 'none';
 
     function timeout(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    let count = 1;
     while (true) {
-        await timeout(15000);
+        await timeout(5000);
         console.log("Getting the list again");
-        const data = await getData(dev);
-        if (data.length > 0 && newCoins.length !== data.length) {
+        const response = await getData(dev, false, buy, key, amount, slippage);
+        if (response.Error) break;
+        if (response && response.data.length > 0) {
             // new coin was added
-            newCoins = data;
-            displayNewCoins();
-            alert('New coin has been created by this developer.');
+            allCoins.unshift(...response.data);
+            messages.unshift(...response.messages);
+            
+            // alert('New coin has been created by this developer.');
+            displayMessages();
+            displayCoins();
+            count ++;
+            if (count > 5) break;
         }
     }
 }
 
-function displayNewCoins() {
-    var str = '<ul>'
-    str += '<li>Here is the list of new coins:</li>';
-    newCoins.forEach(function(coin) {
+function displayCoins() {
+    var str = 'Here is the list of coins:';
+    str += '<ul>'
+    allCoins.forEach(function(coin) {
         str += '<li>'+ coin.name + "    :   " + coin.mint + '</li>';
     }); 
     str += '</ul>';
-    document.getElementById("newCoins").innerHTML = str;
+    document.getElementById("allCoins").innerHTML = str;
 }
 
+function displayMessages() {
+    var str = 'Messages in regards to new coins:';
+    str += '<ul>'
+    messages.forEach(function(message) {
+        str += '<li>'+ message + '</li>';
+    }); 
+    str += '</ul>';
+    document.getElementById("messages").innerHTML = str;
+}
