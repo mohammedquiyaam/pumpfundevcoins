@@ -62,7 +62,8 @@ async function StartButtonClicked() {
         await timeout(500);
         console.log("Getting the list again");
         const response = await getData(dev, false, buy, key, amount, slippage, priorityFee);
-        if (response.Error) break;
+        displayRefreshTime();
+        if (response.Error) continue;
         if (response && response.data.length > 0) {
             // new coin was added
             allCoins.unshift(...response.data);
@@ -75,6 +76,14 @@ async function StartButtonClicked() {
             if (count > 5) break;
         }
     }
+}
+
+function displayRefreshTime() {
+    const now = new Date();
+    const options = { hour12: true};
+    const timeString = now.toLocaleTimeString('en-US', options);
+
+    document.getElementById("refreshTime").innerHTML = "Last refreshed on:  " + timeString;
 }
 
 function displayCoins() {
