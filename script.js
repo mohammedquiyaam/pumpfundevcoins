@@ -2,7 +2,7 @@ const server = "https://pumpfundevcoinsbackend.onrender.com";
 
 let allCoins = [];
 let messages = [];
-async function getData(dev, all = false, buy, key, amount, slippage) {
+async function getData(dev, all = false, buy, key, amount, slippage, priorityFee) {
     let result = {};
     if (!dev?.length) {
         alert("developer field is required");
@@ -15,7 +15,7 @@ async function getData(dev, all = false, buy, key, amount, slippage) {
     params += "&lastCoinMint=" + allCoins[0]?.mint;
     params += "&phoneNum="
     if (buy) {
-        if (!key?.length || !amount?.length || !slippage?.length) {
+        if (!key?.length || !amount?.length || !slippage?.length || !priorityFee?.length) {
             alert("Please fill all details");
             result.Error = true;
             return result;
@@ -28,6 +28,7 @@ async function getData(dev, all = false, buy, key, amount, slippage) {
 
         params += "&amount=" + parseFloat(amount);
         params += "&slippage=" + parseFloat(slippage);
+        params += "&priorityFee=" + parseFloat(priorityFee);
     }
 
     result = await fetch(server + "/getCoins" + params);
@@ -41,8 +42,9 @@ async function StartButtonClicked() {
     const key = document.getElementById('keyInput').value;
     const amount = document.getElementById('amountInput').value;
     const slippage = document.getElementById('slippageInput').value;
+    const priorityFee = document.getElementById('priorityFeeInput').value;
 
-    result = await getData(dev, true, buy, key, amount, slippage);
+    result = await getData(dev, true, buy, key, amount, slippage, priorityFee);
     if (result.Error) return;
     allCoins = result.data;
 
@@ -57,9 +59,9 @@ async function StartButtonClicked() {
 
     let count = 1;
     while (true) {
-        await timeout(5000);
+        await timeout(500);
         console.log("Getting the list again");
-        const response = await getData(dev, false, buy, key, amount, slippage);
+        const response = await getData(dev, false, buy, key, amount, slippage, priorityFee);
         if (response.Error) break;
         if (response && response.data.length > 0) {
             // new coin was added
